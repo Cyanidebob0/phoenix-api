@@ -2,6 +2,7 @@ require("dotenv").config();
 const debug = require("debug")("development:server");
 const app = require("./app");
 const db = require("./models");
+const errorHandler = require("./middlewares/errorHandler");
 
 const PORT = process.env.PORT || 3000;
 
@@ -17,5 +18,7 @@ const startServer = async () => {
     process.exit(1);
   }
 };
+
+app.use(errorHandler);
 
 startServer();

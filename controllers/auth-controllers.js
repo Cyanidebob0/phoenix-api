@@ -3,22 +3,20 @@ const { user } = require("../models");
 const jwtToken = require("../utils/tokenGenerated");
 const bcrypt = require("bcrypt");
 
-module.exports.registerController = async (req, res) => {
+module.exports.registerController = async (req, res, next) => {
   const { fullname, username, password } = req.body;
 
   if (!fullname || !username || !password) {
-    return res.status(400).json({
-      message: "Bad Request",
-      error: "All fields are required",
-    });
+    const err = new Error("All fields are required");
+    err.statusCode = 400;
+    return next(err);
   }
 
   try {
     if (await user.findOne({ where: { username } })) {
-      return res.status(409).json({
-        message: "User already exists please login",
-        error: "User already exists",
-      });
+      const err = new Error("User already exists please login");
+      err.statusCode = 409;
+      return next(err);
     }
     const hashedpassword = await passwordhash(password);
     const createduser = await user.create({
@@ -27,7 +25,7 @@ module.exports.registerController = async (req, res) => {
       password: hashedpassword,
     });
 
-    token = jwtToken(createduser.id, createduser.username);
+    const token = jwtToken(createduser.id, createduser.username);
     res.status(201).json({
       message: "User registered successfully",
       token,
@@ -38,39 +36,34 @@ module.exports.registerController = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Internal Server Error",
-      error: error.message,
-    });
+    error.statusCode = 500;
+    return next(error);
   }
 };
 
-module.exports.loginController = async (req, res) => {
+module.exports.loginController = async (req, res, next) => {
   const { username, password } = req.body;
   if (!username || !password) {
-    return res.status(400).json({
-      message: "Bad Request",
-      error: "All fields are required",
-    });
+    const err = new Error("All fields are required");
+    err.statusCode = 400;
+    return next(err);
   }
 
   try {
     const founduser = await user.findOne({ where: { username } });
     if (!founduser) {
-      return res.status(401).json({
-        message: "User not found please register",
-        error: "User not found",
-      });
+      const err = new Error("User not found please register");
+      err.statusCode = 401;
+      return next(err);
     }
     const isPasswordMatched = await bcrypt.compare(
       password,
       founduser.password
     );
     if (!isPasswordMatched) {
-      return res.status(401).json({
-        message: "Invalid credentials",
-        error: "Invalid credentials",
-      });
+      const err = new Error("Invalid credentials");
+      err.statusCode = 401;
+      return next(err);
     }
     token = jwtToken(founduser.id, founduser.username);
     res.status(200).json({
@@ -83,9 +76,7 @@ module.exports.loginController = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Internal Server Error",
-      error: error.message,
-    });
+    error.statusCode = 500;
+    return next(error);
   }
 };
