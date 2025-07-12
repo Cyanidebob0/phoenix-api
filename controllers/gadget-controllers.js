@@ -1,5 +1,6 @@
 const { gadget } = require("../models");
 const { randomCodenameGenerator } = require("../utils/randomCodenameGenerator");
+const { randomStringGenerator } = require("../utils/randomStringGenerator");
 
 module.exports.createObjectController = async (req, res, next) => {
   const { name } = req.body;
@@ -124,6 +125,30 @@ module.exports.deleteObjectController = async (req, res, next) => {
     res.status(200).json({
       message: "Gadget deleted successfully",
       gadget: foundGadget,
+    });
+  } catch (error) {
+    error.statusCode = 500;
+    return next(error);
+  }
+};
+
+module.exports.selfDestructController = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    await gadget.update(
+      {
+        status: "Destroyed",
+        decommissionedAt: new Date(),
+      },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+    res.status(200).json({
+      message: `Gadget ${id} self-destructed successfully`,
+      SelfDectructCode: randomStringGenerator(),
     });
   } catch (error) {
     error.statusCode = 500;
