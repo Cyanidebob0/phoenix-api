@@ -21,7 +21,7 @@ module.exports.registerController = async (req, res, next) => {
     const hashedpassword = await passwordhash(password);
     const createduser = await user.create({
       fullname,
-      username,
+      username, 
       password: hashedpassword,
     });
 

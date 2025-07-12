@@ -9,6 +9,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", auth);
-app.use("/api/gadget", gadget);
+app.use("/api/gadgets", gadget);
 
 module.exports = app;

@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const { createObjectController } = require("../controllers/gadget-controllers");
 
-router.get("/", (req, res) => {
-  res.json({ message: "Gadet" });
-});
+router.post("/", createObjectController);
 
 module.exports = router;
