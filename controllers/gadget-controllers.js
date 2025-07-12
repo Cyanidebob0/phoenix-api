@@ -1,5 +1,5 @@
 const { gadget } = require("../models");
-const codenames = require("../utils/codename");
+const { randomCodenameGenerator } = require("../utils/randomCodenameGenerator");
 
 module.exports.createObjectController = async (req, res, next) => {
   const { name } = req.body;
@@ -14,9 +14,7 @@ module.exports.createObjectController = async (req, res, next) => {
     return next(err);
   }
   try {
-    const randomCodename =
-      codenames[Math.floor(Math.random() * codenames.length)];
-
+    const randomCodename = randomCodenameGenerator();
     const createdGadget = await gadget.create({
       name,
       codename: randomCodename,
@@ -47,6 +45,85 @@ module.exports.findObjectController = async (req, res, next) => {
           decommissionedAt: gadget.decommissionedAt,
         };
       }),
+    });
+  } catch (error) {
+    error.statusCode = 500;
+    return next(error);
+  }
+};
+
+module.exports.updateObjectController = async (req, res, next) => {
+  const { id, newName, status } = req.body;
+  if (!id) {
+    const err = new Error("Id is required");
+    err.statusCode = 400;
+    return next(err);
+  }
+
+  try {
+    const updateData = {};
+
+    if (newName) {
+      updateData.name = newName;
+      updateData.codename = randomCodenameGenerator();
+    }
+
+    if (status) {
+      const newStatus =
+        status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+
+      if (newStatus === "Destroyed" || newStatus === "Decommissioned") {
+        const err = new Error(
+          "You are not allowed to destroy or decommission this gadget"
+        );
+        err.statusCode = 400;
+        return next(err);
+      }
+      updateData.status = newStatus;
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      const err = new Error("No valid fields to update");
+      err.statusCode = 400;
+      return next(err);
+    }
+
+    await gadget.update(updateData, { where: { id } });
+
+    const foundGadget = await gadget.findByPk(id);
+    res.status(200).json({
+      message: "Gadget updated successfully",
+      gadget: foundGadget,
+    });
+  } catch (error) {
+    error.statusCode = 500;
+    return next(error);
+  }
+};
+
+module.exports.deleteObjectController = async (req, res, next) => {
+  const { id } = req.body;
+  if (!id) {
+    const err = new Error("Id is required");
+    err.statusCode = 400;
+    return next(err);
+  }
+  try {
+    await gadget.update(
+      {
+        status: "Decommissioned",
+        decommissionedAt: new Date(),
+      },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+    const foundGadget = await gadget.findOne({ where: { id } });
+    res.status(200).json({
+      message: "Gadget deleted successfully",
+      gadget: foundGadget,
     });
   } catch (error) {
     error.statusCode = 500;

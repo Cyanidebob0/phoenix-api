@@ -4,6 +4,7 @@ const codenames = [
   "Shadow Hawk",
   "Iron Phantom",
   "Silent Viper",
+
   "Ghost Falcon",
   "Silver Cobra",
   "Midnight Raven",
@@ -93,4 +94,7 @@ const codenames = [
   "Phantom Panther",
 ];
 
-module.exports = codenames;
+module.exports.randomCodenameGenerator = () => {
+  const randomIndex = Math.floor(Math.random() * codenames.length);
+  return codenames[randomIndex];
+};
