@@ -14,6 +14,10 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine", "ejs");
 
+app.get("/terms", (req, res) => {
+  res.render("terms");
+});
+
 app.use("/api", auth);
 app.use("/api/gadgets", checkTokenInHeader, gadget);
 
