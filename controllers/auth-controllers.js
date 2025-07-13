@@ -21,20 +21,23 @@ module.exports.registerController = async (req, res, next) => {
     const hashedpassword = await passwordhash(password);
     const createduser = await user.create({
       fullname,
-      username, 
+      username,
       password: hashedpassword,
     });
 
-    const token = jwtToken(createduser.id, createduser.username);
-    res.status(201).json({
-      message: "User registered successfully",
-      token,
-      user: {
-        id: createduser.id,
-        fullname: createduser.fullname,
-        username: createduser.username,
-      },
-    });
+    const token = jwtToken(
+      createduser.id,
+      createduser.username,
+      createduser.fullname
+    );
+    const cookieOptions = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: 60 * 60 * 1000,
+    };
+    res.cookie("token", token, cookieOptions);
+    res.redirect("/api/info");
   } catch (error) {
     error.statusCode = 500;
     return next(error);
@@ -65,16 +68,15 @@ module.exports.loginController = async (req, res, next) => {
       err.statusCode = 401;
       return next(err);
     }
-    token = jwtToken(founduser.id, founduser.username);
-    res.status(200).json({
-      message: "User logged in successfully",
-      token,
-      user: {
-        id: founduser.id,
-        fullname: founduser.fullname,
-        username: founduser.username,
-      },
-    });
+    const token = jwtToken(founduser.id, founduser.username, founduser.fullname);
+    const cookieOptions = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: 60 * 60 * 1000,
+    };
+    res.cookie("token", token, cookieOptions);
+    res.redirect("/api/info");
   } catch (error) {
     error.statusCode = 500;
     return next(error);

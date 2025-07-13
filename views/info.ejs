@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Phoenix - Authentication Info</title>
+  </head>
+  <body>
+    <div class="h-screen w-full flex items-center justify-center bg-[#F5F5F5]">
+      <div class="w-[30vw] rounded-xl bg-white p-8 shadow-lg">
+        <h1 class="text-3xl mb-6 font-semibold text-green-600">
+          Authentication Successful
+        </h1>
+
+        <p class="mb-6 text-gray-700">
+          Here is your access token. It will expire in <strong>1 hour</strong>.
+          Please keep it secure.
+        </p>
+
+        <div class="mb-2">
+          <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
+            Token:
+            <button
+              id="copyBtn"
+              aria-label="Copy token to clipboard"
+              class="relative p-1 rounded hover:bg-gray-200 focus:outline-none"
+              title="Copy to clipboard"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 text-gray-600"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path
+                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                ></path>
+              </svg>
+              <span
+                id="copyTooltip"
+                class="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 pointer-events-none transition-opacity"
+              >
+                Copied!
+              </span>
+            </button>
+          </h2>
+          <p
+            id="tokenText"
+            class="break-words text-gray-700 bg-gray-100 p-3 rounded-md select-all"
+          >
+            <%= token %>
+          </p>
+        </div>
+
+        <p class="mb-6 text-sm text-gray-600 italic">
+          Tip: Store this token securely and include it in the
+          <code>Authorization</code> header of your API requests as
+          <code>Bearer &lt;token&gt;</code> because this is a JWT token.
+        </p>
+
+        <div>
+          <h2 class="text-xl font-semibold mb-4">User Info:</h2>
+          <ul class="text-gray-700 space-y-2">
+            <li><strong>ID:</strong> <%= user.id %></li>
+            <li><strong>Fullname:</strong> <%= user.fullname %></li>
+            <li><strong>Username:</strong> <%= user.username %></li>
+          </ul>
+        </div>
+
+        <p class="mt-6 text-center">
+          For more details, see the API documentation:
+          <a
+            href="https://dummy-api-docs.example.com"
+            target="_blank"
+            class="text-green-600 hover:underline"
+          >
+            https://dummy-api-docs.example.com
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      const copyBtn = document.getElementById("copyBtn");
+      const tokenText = document.getElementById("tokenText").innerText;
+      const tooltip = document.getElementById("copyTooltip");
+
+      copyBtn.addEventListener("click", () => {
+        navigator.clipboard
+          .writeText(tokenText)
+          .then(() => {
+            tooltip.style.opacity = "1";
+            tooltip.style.pointerEvents = "auto";
+            setTimeout(() => {
+              tooltip.style.opacity = "0";
+              tooltip.style.pointerEvents = "none";
+            }, 1500);
+          })
+          .catch(() => {
+            alert("Failed to copy token.");
+          });
+      });
+    </script>
+  </body>
+</html>

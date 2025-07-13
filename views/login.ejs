@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Phoenix - Login</title>
+  </head>
+  <body>
+    <div class="h-screen w-full flex">
+      <div class="h-full w-1/2 bg-[#F5F5F5] relative">
+        <div class="h-20 p-6">
+          <h1 class="text-4xl font-bold tracking-tighter">Phoenix</h1>
+          <div
+            class="w-[25vw] rounded-xl top-1/2 left-1/2 absolute -translate-x-1/2 -translate-y-1/2"
+          >
+            <h1 class="text-4xl mb-16">Welcome Back</h1>
+            <form action="/api/login" method="POST">
+              <h3 class="text-l mt-5">Username</h3>
+              <input
+                class="w-full h-10 rounded-xl p-2 outline-none border border-gray-300"
+                type="username"
+                placeholder="Enter your username"
+                name="username"
+                required
+              />
+              <h3 class="text-l mt-5">Password</h3>
+              <input
+                class="w-full h-10 rounded-xl p-2 outline-none border border-gray-300"
+                type="password"
+                placeholder="Enter your password"
+                name="password"
+                required
+              />
+              <button class="w-full h-10 rounded-xl p-2 bg-green-400 mt-10">
+                Login
+              </button>
+            </form>
+            <p class="mt-5 text-center">
+              Don't have an account?
+              <span
+                ><a
+                  class="hover:text-blue-700 cursor-pointer"
+                  href="/api/register"
+                  >Sign Up</a
+                ></span
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="h-full w-1/2 bg-[url('/images/main-page.jpg')] bg-cover bg-center -rounded-2xl"
+      ></div>
+    </div>
+  </body>
+</html>
