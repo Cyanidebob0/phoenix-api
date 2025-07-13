@@ -11,7 +11,7 @@
 6. [Best Practices](#best-practices)
 
 ## Introduction
-Welcome to the Phoenix API documentation. This API provides user authentication and gadget management functionality. The API follows RESTful principles and uses JWT for authentication.
+Welcome to the Phoenix API documentation. This API provides user authentication and gadget management functionality.The API follows RESTful principles and uses JWT for authentication.
 
 **Base URL**: `https://your-api-domain.com/api`
 
