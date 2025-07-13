@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "dev": "cross-env DEBUG=development:* nodemon server.js"
+    "dev": "cross-env DEBUG=development:* nodemon server.js",
+    "prod": "cross-env DEBUG=production:* node server.js"
   },
   "keywords": [],
   "author": "",

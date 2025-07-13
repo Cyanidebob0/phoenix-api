@@ -8,6 +8,8 @@ const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
   try {
+    await db.sequelize.authenticate();
+    debug(`Database connected`);
     await db.sequelize.sync({ alter: true });
     debug(`Database synced`);
     app.listen(PORT, () => {
