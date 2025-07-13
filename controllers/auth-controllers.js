@@ -1,4 +1,4 @@
-const passwordhash = require("../utils/passwordhash");
+const passwordhash = require("../utils/passwordHash");
 const { user } = require("../models");
 const jwtToken = require("../utils/tokenGenerated");
 const bcrypt = require("bcrypt");
@@ -68,7 +68,11 @@ module.exports.loginController = async (req, res, next) => {
       err.statusCode = 401;
       return next(err);
     }
-    const token = jwtToken(founduser.id, founduser.username, founduser.fullname);
+    const token = jwtToken(
+      founduser.id,
+      founduser.username,
+      founduser.fullname
+    );
     const cookieOptions = {
       httpOnly: true,
       secure: true,

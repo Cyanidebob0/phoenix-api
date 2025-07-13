@@ -4,7 +4,8 @@
   "main": "server.js",
   "scripts": {
     "dev": "cross-env DEBUG=development:* nodemon server.js",
-    "prod": "cross-env DEBUG=production:* node server.js"
+    "prod": "cross-env DEBUG=production:* node server.js",
+    "start": "cross-env DEBUG=production:* node server.js"
   },
   "keywords": [],
   "author": "",
