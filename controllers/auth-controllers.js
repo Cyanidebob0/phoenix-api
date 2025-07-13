@@ -1,6 +1,6 @@
-const passwordhash = require("../utils/passwordHash");
+const passwordHash = require("../utils/passwordHash");
 const { user } = require("../models");
-const jwtToken = require("../utils/tokenGenerated");
+const tokenGenerated = require("../utils/tokenGenerated");
 const bcrypt = require("bcrypt");
 
 module.exports.registerController = async (req, res, next) => {
@@ -18,14 +18,14 @@ module.exports.registerController = async (req, res, next) => {
       err.statusCode = 409;
       return next(err);
     }
-    const hashedpassword = await passwordhash(password);
+    const hashedpassword = await passwordHash(password);
     const createduser = await user.create({
       fullname,
       username,
       password: hashedpassword,
     });
 
-    const token = jwtToken(
+    const token = tokenGenerated(
       createduser.id,
       createduser.username,
       createduser.fullname
@@ -68,7 +68,7 @@ module.exports.loginController = async (req, res, next) => {
       err.statusCode = 401;
       return next(err);
     }
-    const token = jwtToken(
+    const token = tokenGenerated(
       founduser.id,
       founduser.username,
       founduser.fullname
