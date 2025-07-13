@@ -1,19 +1,45 @@
-# Phoenix API Documentation
+# Phoenix API & Web Interface
 
 ## Table of Contents
 1. [Introduction](#introduction)
-2. [Authentication](#authentication)
-3. [API Endpoints](#api-endpoints)
+2. [Web Interface](#web-interface)
+3. [Authentication](#authentication)
+4. [API Endpoints](#api-endpoints)
    - [Auth](#auth)
    - [Gadgets](#gadgets)
-4. [Error Handling](#error-handling)
-5. [Rate Limiting](#rate-limiting)
-6. [Best Practices](#best-practices)
+5. [Error Handling](#error-handling)
+6. [Rate Limiting](#rate-limiting)
+7. [Best Practices](#best-practices)
 
 ## Introduction
-Welcome to the Phoenix API documentation. This API provides user authentication and gadget management functionality.The API follows RESTful principles and uses JWT for authentication.
+Welcome to the Phoenix API documentation. This project provides both a RESTful API and a web interface for user authentication and gadget management. The API follows RESTful principles and uses JWT for authentication.
 
 **Base URL**: `https://your-api-domain.com/api`
+
+## Web Interface
+This project includes EJS-based web pages that provide a user-friendly interface to interact with the API:
+
+### Available Pages:
+- **Login Page** (`/api/login`)
+  - User authentication with username and password
+  - Redirects to dashboard on successful login
+
+- **Registration Page** (`/api/register`)
+  - New user registration form
+  - Collects username, password, and full name
+
+- **User Dashboard** (`/api/info`)
+  - Displays user information
+  - Shows authentication token
+  - Provides links to API documentation
+
+### Features:
+- Responsive design using Tailwind CSS
+- Client-side form validation
+- Secure JWT token handling via HTTP-only cookies
+- Automatic redirection for unauthenticated users
+
+To get started with the web interface, simply navigate to the respective routes in your web browser after starting the server.
 
 ## Authentication
 This API uses JWT (JSON Web Tokens) for authentication. The token should be included in the `Authorization` header as a Bearer token or in an HTTP-only cookie.
