@@ -300,5 +300,31 @@ API is rate limited to 100 requests per 15 minutes per IP address.
 6. Follow RESTful principles for endpoint design
 7. Use appropriate HTTP methods and status codes
 
+## Viewing API Documentation
+
+This project includes comprehensive API documentation in OpenAPI (Swagger) format. Here's how to view it:
+
+### Option 1: Swagger Editor (Interactive)
+1. Copy the contents of `swagger.yaml`
+2. Go to [Swagger Editor](https://editor.swagger.io/)
+3. Paste the YAML content
+4. Explore the interactive documentation
+
+### Option 2: ReDoc (Readable Format)
+1. Copy the contents of `swagger.yaml`
+2. Go to [ReDoc](https://redocly.github.io/redoc/)
+3. Paste the YAML content
+4. View the beautiful, responsive documentation
+
+### Option 3: Local Setup (Development)
+```bash
+# Install required packages
+npm install -g http-server
+
+# Start a local server
+http-server -p 8080
+```
+Then open `http://localhost:8080` in your browser to view the documentation.
+
 ## Support
 For support, please contact [Bhuvan Annappa](mailto:bhuvanannappa@gmail.com) or open an issue in our [GitHub repository](https://github.com/Cyanidebob0/phoenix-api).
