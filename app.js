@@ -14,6 +14,10 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine", "ejs");
 
+app.get("/", (req, res) => {
+  res.redirect("/api/register");
+});
+
 app.get("/terms", (req, res) => {
   res.render("terms");
 });
