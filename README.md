@@ -2,19 +2,46 @@
 
 ## Table of Contents
 1. [Introduction](#introduction)
-2. [Web Interface](#web-interface)
-3. [Authentication](#authentication)
+2. [Authentication Flow](#-authentication-flow)
+3. [Web Interface](#web-interface)
 4. [API Endpoints](#api-endpoints)
    - [Auth](#auth)
    - [Gadgets](#gadgets)
 5. [Error Handling](#error-handling)
 6. [Rate Limiting](#rate-limiting)
 7. [Best Practices](#best-practices)
+8. [Support](#support)
 
 ## Introduction
 Welcome to the Phoenix API documentation. This project provides both a RESTful API and a web interface for user authentication and gadget management. The API follows RESTful principles and uses JWT for authentication.
 
 **Base URL**: `https://your-api-domain.com/api`
+
+## 🔐 Authentication Flow
+
+1. **Registration**
+   - Send a POST request to `/api/register` with user details
+   - The API will create a new user account
+
+2. **Login**
+   - Send a POST request to `/api/login` with credentials
+   - On success, you'll receive:
+     - A JWT token in an HTTP-only cookie (automatically handled by browsers)
+     - User details in the response body
+
+3. **Making Authenticated Requests**
+   - For API clients: Include `Authorization: Bearer {token}` header
+   - For web browsers: The HTTP-only cookie is automatically included
+
+4. **Token Expiration**
+   - Tokens expire after 1 hour
+   - After expiration, users need to log in again
+
+### Password Requirements:
+- Minimum 8 characters
+- At least 1 uppercase letter
+- At least 1 number
+- At least 1 special character
 
 ## Web Interface
 This project includes EJS-based web pages that provide a user-friendly interface to interact with the API:
@@ -274,4 +301,4 @@ API is rate limited to 100 requests per 15 minutes per IP address.
 7. Use appropriate HTTP methods and status codes
 
 ## Support
-For support, please contact [your-email@example.com](mailto:your-email@example.com) or open an issue in our GitHub repository.
+For support, please contact [Bhuvan Annappa](mailto:bhuvanannappa@gmail.com) or open an issue in our [GitHub repository](https://github.com/Cyanidebob0/phoenix-api).

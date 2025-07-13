@@ -1,0 +1,340 @@
+openapi: 3.0.0
+info:
+  title: Phoenix API
+  description: |
+    # Phoenix API Documentation
+    
+    RESTful API for user authentication and gadget management with JWT authentication.
+    
+    ## 🔐 Authentication Flow
+    
+    1. **Registration**
+       - Send a POST request to `/api/register` with user details
+       - The API will create a new user account
+    
+    2. **Login**
+       - Send a POST request to `/api/login` with credentials
+       - On success, you'll receive:
+         - A JWT token in an HTTP-only cookie (automatically handled by browsers)
+         - User details in the response body
+    
+    3. **Making Authenticated Requests**
+       - For API clients: Include `Authorization: Bearer {token}` header
+       - For web browsers: The HTTP-only cookie is automatically included
+    
+    4. **Token Expiration**
+       - Tokens expire after 1 hour
+       - After expiration, users need to log in again
+    
+    ## 🛠 Features
+    - User registration and authentication
+    - JWT-based stateless authentication
+    - CRUD operations for gadgets
+    - Self-destruct functionality for gadgets
+    - Secure password hashing
+    - Input validation
+    - Error handling
+  version: 1.0.0
+  contact:
+    name: API Support
+    url: https://github.com/Cyanidebob0/phoenix-api
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3000/api
+    description: Development server
+  - url: https://your-api-domain.com/api
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User registration and authentication
+  - name: Gadgets
+    description: Gadget management
+
+paths:
+  /register:
+    post:
+      tags: [Authentication]
+      summary: Register a new user
+      description: |
+        Creates a new user account with the provided details.
+        
+        ### Password Requirements:
+        - Minimum 8 characters
+        - At least 1 uppercase letter
+        - At least 1 number
+        - At least 1 special character
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+                - fullname
+              properties:
+                username:
+                  type: string
+                  example: johndoe
+                password:
+                  type: string
+                  format: password
+                  example: securePassword123
+                fullname:
+                  type: string
+                  example: John Doe
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User registered successfully
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: 60d21b4667d0d8992e610c85
+                      username:
+                        type: string
+                        example: johndoe
+                      fullname:
+                        type: string
+                        example: John Doe
+        '400':
+          description: Missing required fields
+        '409':
+          description: Username already exists
+
+  /login:
+    post:
+      tags: [Authentication]
+      summary: Login user
+      description: |
+        Authenticates a user and returns a JWT token.
+        
+        ### Notes:
+        - The token is returned in an HTTP-only cookie
+        - The cookie is set with `Secure` and `SameSite=Strict` flags in production
+        - Token is valid for 1 hour
+        
+        ### Example Credentials (for testing):
+        ```json
+        {
+          "username": "testuser",
+          "password": "Test@123"
+        }
+        ```
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: johndoe
+                password:
+                  type: string
+                  format: password
+                  example: securePassword123
+      responses:
+        '200':
+          description: Login successful
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; HttpOnly; Path=/; Max-Age=3600
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login successful
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: 60d21b4667d0d8992e610c85
+                      username:
+                        type: string
+                        example: johndoe
+                      fullname:
+                        type: string
+                        example: John Doe
+        '401':
+          description: Invalid credentials
+
+  /gadgets:
+    get:
+      tags: [Gadgets]
+      summary: Get all gadgets
+      description: |
+        Retrieves a list of all gadgets for the authenticated user.
+        
+        ### Response Fields:
+        - `id`: Unique identifier for the gadget
+        - `name`: Name of the gadget
+        - `description`: Optional description
+        - `createdAt`: ISO timestamp of creation
+        - `updatedAt`: ISO timestamp of last update
+        
+        ### Example Response:
+        ```json
+        [
+          {
+            "id": "60d21b4667d0d8992e610c86",
+            "name": "Smartphone",
+            "description": "Latest model with 128GB storage",
+            "createdAt": "2023-01-01T12:00:00Z",
+            "updatedAt": "2023-01-01T12:00:00Z"
+          }
+        ]
+        ```
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of gadgets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Gadget'
+    
+    post:
+      tags: [Gadgets]
+      summary: Create a new gadget
+      description: |
+        Creates a new gadget with the provided details.
+        
+        ### Validation Rules:
+        - `name`: Required, max 100 characters
+        - `description`: Optional, max 500 characters
+        
+        ### Example Request:
+        ```json
+        {
+          "name": "Smart Watch",
+          "description": "Waterproof with heart rate monitor"
+        }
+        ```
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGadgetRequest'
+      responses:
+        '201':
+          description: Gadget created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Gadget'
+
+  /gadgets/{id}/self-destruct:
+    post:
+      tags: [Gadgets]
+      summary: Self-destruct a gadget
+      description: |
+        Initiates a self-destruct sequence for the specified gadget.
+        The gadget will be permanently deleted after a 5-second delay.
+        
+        ### Response:
+        - `200`: Success - Gadget will self-destruct
+        - `404`: Gadget not found or not owned by user
+        
+        ### Example Usage:
+        ```
+        POST /api/gadgets/60d21b4667d0d8992e610c86/self-destruct
+        Authorization: Bearer your.jwt.token.here
+        ```
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Gadget ID
+      responses:
+        '200':
+          description: Gadget will self-destruct in 5 seconds
+        '404':
+          description: Gadget not found
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT token obtained after successful login.
+        
+        ### How to use:
+        1. Get token by logging in at `/api/login`
+        2. Include in header: `Authorization: Bearer {token}`
+        
+        ### Token Format:
+        ```
+        eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwZDIxYjQ2NjdkMGQ4OTkyZTYxMGM4NSIsInVzZXJuYW1lIjoiam9obmRvZSIsImlhdCI6MTYyNDEwMjQwMCwiZXhwIjoxNjI0MTA2MDAwfQ.1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        ```
+  
+  schemas:
+    Gadget:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 60d21b4667d0d8992e610c86
+        name:
+          type: string
+          example: Smartphone
+        description:
+          type: string
+          example: Latest smartphone model
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    
+    CreateGadgetRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: Smartwatch
+        description:
+          type: string
+          example: Waterproof smartwatch with health tracking
+
+security:
+  - bearerAuth: []
