@@ -32,10 +32,16 @@ module.exports.createObjectController = async (req, res, next) => {
 
 module.exports.findObjectController = async (req, res, next) => {
   try {
-    const gadgets = await gadget.findAll();
+    const { status } = req.query;
+
+    const exists = {};
+    if (status) {
+      exists.status = status;
+    }
+    const filteredGadgets = await gadget.findAll({ where: exists });
     res.status(200).json({
       message: "Gadgets fetched successfully",
-      gadgets: gadgets.map((gadget) => {
+      gadgets: filteredGadgets.map((gadget) => {
         return {
           id: gadget.id,
           name: `${gadget.name} - ${Math.floor(

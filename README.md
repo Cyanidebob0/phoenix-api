@@ -7,15 +7,85 @@
 4. [API Endpoints](#api-endpoints)
    - [Auth](#auth)
    - [Gadgets](#gadgets)
-5. [Error Handling](#error-handling)
-6. [Rate Limiting](#rate-limiting)
-7. [Best Practices](#best-practices)
-8. [Support](#support)
+6. [Error Handling](#error-handling)
+7. [Rate Limiting](#rate-limiting)
+8. [Best Practices](#best-practices)
+9. [Support](#support)
 
 ## Introduction
 Welcome to the Phoenix API documentation. This project provides both a RESTful API and a web interface for user authentication and gadget management. The API follows RESTful principles and uses JWT for authentication.
 
 **Base URL**: `https://your-api-domain.com/api`
+
+## 🗄️ Database Setup
+
+### Prerequisites
+- PostgreSQL 13 or higher
+- Node.js 16+ and npm
+
+### Configuration
+1. Create a new PostgreSQL database:
+   ```sql
+   CREATE DATABASE phoenix_imf;
+   CREATE USER your_username WITH PASSWORD 'your_password';
+   GRANT ALL PRIVILEGES ON DATABASE phoenix_imf TO your_username;
+   ```
+
+2. Create a `.env` file in the root directory with these variables:
+   ```env
+   # Database Configuration
+   DB_NAME=phoenix_imf
+   DB_USER=your_username
+   DB_PASS=your_password
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_DIALECT=postgres
+   DB_SSL=false  # Set to true in production with proper certificates
+   
+   # JWT Configuration
+   JWT_SECRET=your_secure_jwt_secret
+   
+   # App Configuration
+   NODE_ENV=development
+   PORT=3000
+   ```
+
+### Database Schema
+- **users**: Stores user account information
+  - id (UUID)
+  - username (String, unique)
+  - password (String, hashed)
+  - fullname (String)
+  - created_at (Timestamp)
+  - updated_at (Timestamp)
+
+- **gadgets**: Stores gadget information
+  - id (UUID)
+  - name (String, unique)
+  - description (String, optional)
+  - status (Enum: 'Available', 'Deployed', 'Destroyed', 'Decommissioned')
+  - decommissioned_at (Timestamp, optional)
+  - created_at (Timestamp)
+  - updated_at (Timestamp)
+  - user_id (Foreign Key to users.id)
+
+### Development Setup
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Start the development server (auto-creates tables):
+   ```bash
+   npm run dev
+   ```
+
+### Production Notes
+- **ALWAYS** use environment variables for sensitive data
+- Set `NODE_ENV=production` in production
+- Configure proper database backups
+- Use connection pooling for better performance
+- Enable SSL in production environments
 
 ## 🔐 Authentication Flow
 
@@ -158,17 +228,30 @@ GET /api/gadgets
 Authorization: Bearer <jwt_token>
 ```
 
+**Query Parameters**:
+- `status` (optional): Filter gadgets by status. Possible values: `Available`, `Deployed`, `Destroyed`, `Decommissioned`
+
+**Example Requests**:
+```http
+# Get all gadgets
+GET /api/gadgets
+
+# Get only available gadgets
+GET /api/gadgets?status=Available
+```
+
 **Response**:
 ```json
-[
-  {
-    "id": "string",
-    "name": "string",
-    "description": "string",
-    "createdAt": "datetime",
-    "updatedAt": "datetime"
-  }
-]
+{
+  "message": "Gadgets fetched successfully",
+  "gadgets": [
+    {
+      "id": "uuid-string",
+      "name": "Gadget Name - 1234",
+      "status": "Available"
+    }
+  ]
+}
 ```
 
 ---
