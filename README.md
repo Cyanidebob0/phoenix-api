@@ -15,7 +15,7 @@
 ## Introduction
 Welcome to the Phoenix API documentation. This project provides both a RESTful API and a web interface for user authentication and gadget management. The API follows RESTful principles and uses JWT for authentication.
 
-**Base URL**: `https://your-api-domain.com/api`
+**Base URL**: `https://phoenix-api-5219.onrender.com/api`
 
 ## 🗄️ Database Setup
 
