@@ -410,4 +410,4 @@ http-server -p 8080
 Then open `http://localhost:8080` in your browser to view the documentation.
 
 ## Support
-For support, please contact [Bhuvan Annappa](mailto:bhuvanannappa@gmail.com) or open an issue in our [GitHub repository](https://github.com/Cyanidebob0/phoenix-api).
+For support, please contact [Bhuvan Annappa](mailto:bhuvanannappa@gmail.com) or  open an issue on our [GitHub repository](https://github.com/Cyanidebob0/phoenix-api).
